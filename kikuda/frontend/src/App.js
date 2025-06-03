@@ -12,9 +12,16 @@ function App() {
 
   // コンポーネント初回マウント時に投稿一覧を取得（GETリクエスト）
   useEffect(() => {
-    fetch("/posts") // Flaskサーバーの /posts エンドポイントにリクエスト
-      .then((res) => res.json()) // レスポンスをJSONとして解析
-      .then((data) => setPosts(data)); // 取得した投稿一覧を状態に保存
+    const fetchPosts = () => {
+      fetch("/posts")
+        .then((res) => res.json())
+        .then((data) => setPosts(data));
+    };
+
+    fetchPosts(); // 初回実行
+    const intervalId = setInterval(fetchPosts, 3000); // 3秒ごと
+
+    return () => clearInterval(intervalId); // アンマウント時に停止
   }, []); // 空配列により初回のみ実行
 
   // 投稿フォームの送信時の処理
